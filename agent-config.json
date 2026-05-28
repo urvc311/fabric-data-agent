@@ -1,0 +1,460 @@
+{
+  "agent_name": "Fabric Data Agent",
+  "version": "1.0.0",
+  "description": "AI-powered data agent for processing and analyzing CSV files in Microsoft Fabric",
+  "enabled": true,
+  
+  "agent_identity": {
+    "role": "data_processing_orchestrator",
+    "responsibilities": [
+      "CSV data ingestion and validation",
+      "Data quality assessment",
+      "Schema detection and transformation",
+      "Medallion architecture implementation",
+      "Error handling and recovery",
+      "Performance optimization"
+    ],
+    "capabilities": [
+      "Natural language query processing",
+      "Automated data quality checks",
+      "Intelligent schema mapping",
+      "Multi-stage transformation pipelines",
+      "Real-time error detection and remediation"
+    ]
+  },
+
+  "system_prompt": {
+    "instructions": "You are an enterprise-grade Fabric Data Agent responsible for ingesting, validating, transforming, and optimizing CSV files in Microsoft Fabric. Your core responsibilities are: (1) Load CSV files from workspace storage with automatic encoding detection; (2) Validate data quality, detect anomalies, and generate quality reports; (3) Apply business transformations and create medallion architecture layers; (4) Handle errors gracefully with automatic recovery; (5) Optimize performance for large datasets; (6) Provide actionable insights and metadata. Always prioritize data integrity, maintain audit trails, and communicate clearly about data lineage.",
+    "personality": "professional, analytical, proactive",
+    "communication_style": "clear, concise, technical yet accessible",
+    "error_handling": "graceful degradation with detailed explanations"
+  },
+
+  "data_processing_config": {
+    "input_stage": {
+      "supported_formats": ["csv", "tsv", "json", "parquet"],
+      "csv_parameters": {
+        "delimiter_detection": true,
+        "encoding_detection": ["utf-8", "latin-1", "iso-8859-1"],
+        "header_row": 1,
+        "quote_character": "\"",
+        "escape_character": "\\",
+        "null_values": ["null", "NULL", "None", "N/A", ""]
+      },
+      "file_limits": {
+        "max_file_size_gb": 5,
+        "max_rows_per_file": 10000000,
+        "max_columns": 500,
+        "timeout_seconds": 1800
+      }
+    },
+
+    "validation_stage": {
+      "enabled": true,
+      "rules": [
+        {
+          "rule_id": "schema_validation",
+          "description": "Validate schema consistency across records",
+          "severity": "critical",
+          "auto_remediate": false
+        },
+        {
+          "rule_id": "null_check",
+          "description": "Detect excessive null values",
+          "severity": "warning",
+          "threshold_percent": 20,
+          "auto_remediate": false
+        },
+        {
+          "rule_id": "duplicate_detection",
+          "description": "Identify duplicate rows",
+          "severity": "high",
+          "auto_remediate": true,
+          "action": "flag_for_review"
+        },
+        {
+          "rule_id": "data_type_validation",
+          "description": "Validate data types match expected schema",
+          "severity": "critical",
+          "auto_remediate": true,
+          "action": "type_coercion"
+        },
+        {
+          "rule_id": "outlier_detection",
+          "description": "Detect statistical outliers",
+          "severity": "medium",
+          "method": "iqr",
+          "auto_remediate": false
+        },
+        {
+          "rule_id": "referential_integrity",
+          "description": "Check foreign key relationships",
+          "severity": "high",
+          "auto_remediate": false
+        }
+      ],
+      "quality_threshold": 95,
+      "reporting": {
+        "generate_quality_report": true,
+        "include_data_profile": true,
+        "include_recommendations": true
+      }
+    },
+
+    "transformation_stage": {
+      "enabled": true,
+      "bronze_layer": {
+        "description": "Raw data ingestion layer",
+        "operations": [
+          "load_raw_data",
+          "add_ingestion_timestamp",
+          "add_source_metadata",
+          "preserve_original_format"
+        ],
+        "storage_format": "delta",
+        "partitioning": "by_date"
+      },
+      "silver_layer": {
+        "description": "Cleaned and validated data layer",
+        "operations": [
+          "remove_duplicates",
+          "handle_null_values",
+          "standardize_formats",
+          "validate_business_rules",
+          "add_data_quality_flags"
+        ],
+        "null_handling": {
+          "strategy": "drop_or_forward_fill",
+          "method": "forward_fill"
+        },
+        "storage_format": "delta",
+        "partitioning": "by_date_and_category"
+      },
+      "gold_layer": {
+        "description": "Aggregated business-ready data layer",
+        "operations": [
+          "aggregate_by_dimensions",
+          "calculate_metrics",
+          "apply_business_rules",
+          "generate_summaries",
+          "create_business_views"
+        ],
+        "storage_format": "delta",
+        "partitioning": "by_business_unit_and_date"
+      }
+    },
+
+    "output_stage": {
+      "destinations": [
+        {
+          "type": "fabric_warehouse",
+          "format": "delta",
+          "mode": "overwrite",
+          "partition_by": ["date", "category"]
+        },
+        {
+          "type": "fabric_lakehouse",
+          "format": "parquet",
+          "mode": "append",
+          "compression": "snappy"
+        },
+        {
+          "type": "power_bi_semantic_model",
+          "auto_refresh": true,
+          "refresh_interval_minutes": 60
+        }
+      ]
+    }
+  },
+
+  "ai_tools_configuration": {
+    "tools": [
+      {
+        "tool_id": "load_csv_files",
+        "name": "Load CSV Files",
+        "description": "Load CSV files from Fabric workspace storage with automatic format detection",
+        "parameters": {
+          "file_path": "string",
+          "encoding": "string",
+          "delimiter": "string",
+          "header_row": "integer"
+        },
+        "enabled": true,
+        "timeout_seconds": 300
+      },
+      {
+        "tool_id": "validate_data_quality",
+        "name": "Validate Data Quality",
+        "description": "Run comprehensive data quality checks and generate quality report",
+        "parameters": {
+          "dataset_name": "string",
+          "validation_rules": "array",
+          "quality_threshold": "float"
+        },
+        "enabled": true,
+        "timeout_seconds": 600
+      },
+      {
+        "tool_id": "detect_schema",
+        "name": "Detect Schema",
+        "description": "Automatically detect and infer data schema from CSV files",
+        "parameters": {
+          "file_path": "string",
+          "sample_size": "integer"
+        },
+        "enabled": true,
+        "timeout_seconds": 120
+      },
+      {
+        "tool_id": "transform_data",
+        "name": "Transform Data",
+        "description": "Apply data transformations and business rules",
+        "parameters": {
+          "source_dataset": "string",
+          "transformation_rules": "array",
+          "target_layer": "string"
+        },
+        "enabled": true,
+        "timeout_seconds": 1800
+      },
+      {
+        "tool_id": "generate_insights",
+        "name": "Generate Insights",
+        "description": "Generate business insights and anomaly detection",
+        "parameters": {
+          "dataset_name": "string",
+          "analysis_type": "string",
+          "dimensions": "array"
+        },
+        "enabled": true,
+        "timeout_seconds": 300
+      },
+      {
+        "tool_id": "manage_medallion_architecture",
+        "name": "Manage Medallion Architecture",
+        "description": "Orchestrate bronze-silver-gold layer pipeline",
+        "parameters": {
+          "source_files": "array",
+          "pipeline_config": "object",
+          "run_mode": "string"
+        },
+        "enabled": true,
+        "timeout_seconds": 3600
+      },
+      {
+        "tool_id": "handle_errors",
+        "name": "Handle Errors",
+        "description": "Detect and remediate data processing errors",
+        "parameters": {
+          "error_type": "string",
+          "context": "object",
+          "recovery_strategy": "string"
+        },
+        "enabled": true,
+        "timeout_seconds": 300
+      },
+      {
+        "tool_id": "generate_report",
+        "name": "Generate Report",
+        "description": "Generate comprehensive data processing report",
+        "parameters": {
+          "report_type": "string",
+          "include_sections": "array",
+          "output_format": "string"
+        },
+        "enabled": true,
+        "timeout_seconds": 300
+      }
+    ]
+  },
+
+  "orchestration_config": {
+    "execution_mode": "sequential",
+    "parallel_tasks": true,
+    "max_parallel_workers": 4,
+    "workflow_stages": [
+      {
+        "stage_name": "initialization",
+        "order": 1,
+        "tasks": [
+          "validate_workspace_access",
+          "load_configuration",
+          "initialize_logging"
+        ]
+      },
+      {
+        "stage_name": "ingestion",
+        "order": 2,
+        "tasks": [
+          "enumerate_csv_files",
+          "load_csv_files",
+          "create_bronze_layer"
+        ]
+      },
+      {
+        "stage_name": "validation",
+        "order": 3,
+        "tasks": [
+          "run_quality_checks",
+          "detect_schema_issues",
+          "generate_quality_report"
+        ]
+      },
+      {
+        "stage_name": "transformation",
+        "order": 4,
+        "tasks": [
+          "create_silver_layer",
+          "apply_business_rules",
+          "create_gold_layer"
+        ]
+      },
+      {
+        "stage_name": "insights",
+        "order": 5,
+        "tasks": [
+          "generate_statistical_insights",
+          "detect_anomalies",
+          "create_summary_report"
+        ]
+      },
+      {
+        "stage_name": "completion",
+        "order": 6,
+        "tasks": [
+          "generate_final_report",
+          "publish_metrics",
+          "log_completion"
+        ]
+      }
+    ]
+  },
+
+  "error_handling": {
+    "strategies": [
+      {
+        "error_type": "file_not_found",
+        "action": "skip_and_log",
+        "notify": true,
+        "retry": 0
+      },
+      {
+        "error_type": "encoding_error",
+        "action": "auto_detect_and_retry",
+        "notify": false,
+        "retry": 3
+      },
+      {
+        "error_type": "schema_mismatch",
+        "action": "flag_and_review",
+        "notify": true,
+        "retry": 0
+      },
+      {
+        "error_type": "timeout",
+        "action": "retry_with_backoff",
+        "notify": true,
+        "retry": 3,
+        "backoff_multiplier": 2
+      },
+      {
+        "error_type": "storage_error",
+        "action": "fallback_and_notify",
+        "notify": true,
+        "retry": 5
+      }
+    ],
+    "logging": {
+      "level": "INFO",
+      "destination": "fabric_workspace",
+      "retention_days": 30
+    }
+  },
+
+  "monitoring_config": {
+    "enabled": true,
+    "metrics": [
+      "files_processed",
+      "total_rows_processed",
+      "processing_time_seconds",
+      "data_quality_score",
+      "error_count",
+      "transformation_success_rate"
+    ],
+    "alerts": [
+      {
+        "metric": "data_quality_score",
+        "threshold": 90,
+        "condition": "below",
+        "action": "alert_and_pause"
+      },
+      {
+        "metric": "error_count",
+        "threshold": 5,
+        "condition": "above",
+        "action": "alert_and_notify"
+      },
+      {
+        "metric": "processing_time_seconds",
+        "threshold": 3600,
+        "condition": "above",
+        "action": "alert_and_timeout"
+      }
+    ],
+    "logging": {
+      "verbose_mode": false,
+      "capture_metadata": true,
+      "track_lineage": true
+    }
+  },
+
+  "security_config": {
+    "authentication": {
+      "method": "azure_ad",
+      "tenant_id": "YOUR_TENANT_ID"
+    },
+    "authorization": {
+      "workspace_access": "required",
+      "data_access_control": "row_level_security"
+    },
+    "data_protection": {
+      "encryption_at_rest": true,
+      "encryption_in_transit": true,
+      "audit_logging": true
+    },
+    "compliance": {
+      "gdpr_compliant": true,
+      "data_retention_policy": "automatic_cleanup_after_90_days"
+    }
+  },
+
+  "scheduling_config": {
+    "enabled": true,
+    "schedule_type": "recurring",
+    "frequency": "daily",
+    "time_utc": "02:00",
+    "timezone": "UTC",
+    "max_concurrent_runs": 1,
+    "timeout_minutes": 120,
+    "retry_policy": {
+      "max_retries": 3,
+      "backoff_strategy": "exponential"
+    }
+  },
+
+  "notification_config": {
+    "enabled": true,
+    "channels": [
+      {
+        "type": "email",
+        "recipients": ["data-team@company.com"],
+        "on_events": ["completion", "failure", "quality_issues"]
+      },
+      {
+        "type": "teams",
+        "webhook_url": "YOUR_TEAMS_WEBHOOK_URL",
+        "on_events": ["critical_errors", "quality_threshold_breach"]
+      }
+    ]
+  }
+}
